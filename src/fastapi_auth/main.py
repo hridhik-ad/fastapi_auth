@@ -70,7 +70,7 @@ class RateLimiter:
         if self.addr_count.get(ip, 0) >= self.limit:
             raise HTTPException(status_code=429, detail="Rate Limit Exceeded")
         self.addr_count[ip] = self.addr_count.get(ip, 0) + 1
-        return True
+        return True   
 
 
 firewall = RateLimiter(limit=100) # Set high so you can test easily
@@ -101,6 +101,12 @@ password_hash = PasswordHash.recommended()
 # --- ROUTES ---
 
 #register a new user
+
+@app.get("/")
+def root():
+    return {"message": "Welcome to the FastAPI Auth System!"}
+
+
 @app.post("/register", dependencies=[Depends(firewall)])
 def register_user(user: UserCreate, db: Session = Depends(get_db)):
     # 1. Scramble the password
